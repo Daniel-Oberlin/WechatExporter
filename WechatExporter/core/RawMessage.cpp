@@ -15,7 +15,7 @@ bool convertUnknownField(const UnknownField &uf, std::string& value)
 {
     if (uf.type() == UnknownField::TYPE_LENGTH_DELIMITED)
     {
-        value.assign(uf.length_delimited().c_str(), uf.GetLengthDelimitedSize());
+        value.assign(uf.length_delimited().data(), uf.GetLengthDelimitedSize());
         return true;
     }
     else if (uf.type() == UnknownField::TYPE_VARINT)
@@ -56,6 +56,29 @@ bool convertUnknownField(const UnknownField &uf, int& value)
     }
     
     return false;
+}
+
+
+#include <string>
+#include <sstream>
+#include <unordered_map>
+
+std::string UnescapeCEscapeString(const std::string& input) {
+    std::unordered_map<char, char> escape_sequences = {
+        {'n', '\n'}, {'t', '\t'}, {'r', '\r'}, {'\\', '\\'}, {'"', '"'}, {'\'', '\''}
+    };
+
+    std::ostringstream result;
+    for (size_t i = 0; i < input.length(); ++i) {
+        if (input[i] == '\\' && i + 1 < input.length() && escape_sequences.count(input[i + 1])) {
+            result << escape_sequences[input[i + 1]];
+            ++i; // Skip the next character (part of escape sequence)
+        } else {
+            result << input[i];
+        }
+    }
+
+    return result.str();
 }
 
 std::string RawMessage::toUtf8String(const std::string& str)
@@ -99,7 +122,7 @@ bool RawMessage::merge(const char *data, int length)
     FileDescriptorProto file;
     file.set_name("empty_message.proto");
     file.add_message_type()->set_name("EmptyMessage");
-    GOOGLE_CHECK(m_pool->BuildFile(file) != NULL);
+    //GOOGLE_CHECK(m_pool->BuildFile(file) != NULL);
 
     const Descriptor *descriptor = m_pool->FindMessageTypeByName("EmptyMessage");
     if (NULL == descriptor)

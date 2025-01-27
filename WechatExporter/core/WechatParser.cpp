@@ -588,7 +588,7 @@ bool MMSettingParser::parse(const std::string& usrNameHash)
     }
     
     plist_t node = NULL;
-    plist_from_memory(reinterpret_cast<const char *>(&data[0]), static_cast<uint32_t>(data.size()), &node);
+    plist_from_memory(reinterpret_cast<const char *>(&data[0]), static_cast<uint32_t>(data.size()), &node, NULL);
     if (NULL == node)
     {
         return false;
@@ -890,7 +890,7 @@ bool WechatInfoParser::parsePreferences(WechatInfo& wechatInfo)
     }
     
     plist_t node = NULL;
-    plist_from_memory(reinterpret_cast<const char *>(&data[0]), static_cast<uint32_t>(data.size()), &node);
+    plist_from_memory(reinterpret_cast<const char *>(&data[0]), static_cast<uint32_t>(data.size()), &node, NULL);
     if (NULL == node)
     {
         return false;

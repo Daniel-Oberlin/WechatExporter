@@ -40,9 +40,9 @@ class MbdbReader {
     std::ifstream m_ifs;
     std::vector<char> m_buffer;
     
-#ifndef NDEBUG
-    std::ifstream::streampos m_pos;
-#endif
+//#ifndef NDEBUG
+//    std::ifstream::streampos m_pos;
+//#endif
 public:
     
     ~MbdbReader()
